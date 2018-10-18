@@ -1,2 +1,0 @@
-# ECOC
-test

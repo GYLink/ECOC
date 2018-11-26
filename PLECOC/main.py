@@ -30,12 +30,9 @@ def run_sample():
     while i != ite:
         filepath = 'mat/sample data.mat'
         tr_data, tr_labels, ts_data, ts_labels = read_mat(filepath)
-        bu_ecoc = BottomUp.BottomUpPLECOC(libsvm, svm_param='-t 2 -c 1')
-        bu_ecoc.fit(tr_data, tr_labels)
-        pre_label_matrix, accuracy = bu_ecoc.predict(ts_data, ts_labels)
-        # pl_ecoc = Rand.RandPLECOC(libsvm, svm_param='-t 2 -c 1')
-        # pl_ecoc.fit(tr_data, tr_labels)
-        # pre_label_matrix, accuracy = pl_ecoc.predict(ts_data, ts_labels)
+        pl_ecoc = Rand.RandPLECOC(libsvm, svm_param='-t 2 -c 1')
+        pl_ecoc.fit(tr_data, tr_labels)
+        pre_label_matrix, accuracy = pl_ecoc.predict(ts_data, ts_labels)
         accuracies.append(accuracy)
         i = i+1
     print(accuracies)
@@ -49,7 +46,7 @@ def run_birdsong():
     accuracies = []
     ite = 1
     i = 0
-    name = 'bu'
+    name = 'pl'
     while i != ite:
         filepath = 'mat/BirdSong.mat'
         mat = io.loadmat(filepath)
@@ -64,16 +61,10 @@ def run_birdsong():
         split_tr_data, split_ts_data = tr_data[tr_idx], tr_data[ts_idx]
         split_tr_labels, split_ts_labels = tr_labels[:, tr_idx], true_labels[:, ts_idx]
         # tr_data, tr_labels, ts_data, ts_labels = read_mat(filepath, tr_key='data', tr_label_key='partial_target')
-        if name == 'bu':
-            bu_ecoc = BottomUp.BottomUpPLECOC(libsvm, svm_param='-t 2 -c 1')
-            bu_ecoc.fit(split_tr_data, split_tr_labels)
-            pre_label_matrix, accuracy = bu_ecoc.predict(split_ts_data, split_ts_labels)
-            del bu_ecoc
-        else:
-            pl_ecoc = Rand.RandPLECOC(libsvm, svm_param='-t 2 -c 1')
-            pl_ecoc.fit(split_tr_data, split_tr_labels)
-            pre_label_matrix, accuracy = pl_ecoc.predict(split_ts_data, split_ts_labels)
-            del pl_ecoc
+        pl_ecoc = Rand.RandPLECOC(libsvm, svm_param='-t 2 -c 1')
+        pl_ecoc.fit(split_tr_data, split_tr_labels)
+        pre_label_matrix, accuracy = pl_ecoc.predict(split_ts_data, split_ts_labels)
+        del pl_ecoc
         accuracies.append(accuracy)
         data_class = np.array(range(split_ts_labels.shape[0]))
         ts_vector = np.dot(data_class, split_ts_labels)
